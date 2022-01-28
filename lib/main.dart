@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:restart_app/restart_app.dart';
 
 void main() => runApp(MyApp());
 
@@ -125,6 +126,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
   // in a list.
   Future<void> getPairedDevices() async {
     List<BluetoothDevice> devices = [];
+    print("object");
 
     // To get the list of paired devices
     try {
@@ -174,9 +176,11 @@ class _BluetoothAppState extends State<BluetoothApp> {
                 // So, that when new devices are paired
                 // while the app is running, user can refresh
                 // the paired devices list.
-                await getPairedDevices().then((_) {
-                  show('Device list refreshed');
-                });
+
+                // await getPairedDevices().then((_) {
+                //   show('Device list refreshed');
+                // });
+                Restart.restartApp();
               },
             ),
           ],
@@ -367,6 +371,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
 
   // Create the List of devices to be shown in Dropdown Menu
   List<DropdownMenuItem<BluetoothDevice>> _getDeviceItems() {
+    print("here is list");
     List<DropdownMenuItem<BluetoothDevice>> items = [];
     if (_devicesList.isEmpty) {
       items.add(DropdownMenuItem(
@@ -390,6 +395,11 @@ class _BluetoothAppState extends State<BluetoothApp> {
     });
     if (_device == null) {
       show('No device selected');
+      setState(() {
+      _isButtonUnavailable = false;
+      _deviceState = 0;
+    });
+            
     } else {
       if (!isConnected) {
         await BluetoothConnection.toAddress(_device.address)
